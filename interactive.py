@@ -130,7 +130,10 @@ def main(
         else:
             tensor = torch.Tensor()
             tensor = tensor.to(device)
-            dist.recv(tensor=tensor, src=0)
+            prompt = None
+            while tensor.numel() == 0:
+                time.sleep(1)
+                dist.recv(tensor=tensor, src=0)
             prompt = ''.join([chr(int(x)) for x in tensor])
             print('Rank {} has received prompt {}\n'.format(world_rank, prompt))
 
