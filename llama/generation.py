@@ -23,6 +23,7 @@ class LLaMA:
         top_p: float = 0.0, #0.95,
         repetition_penalty: float = (1.0 / 0.85),
         token_callback=None,
+        eos_w=1.0
     ) -> List[str]:
         bsz = len(prompts)
         params = self.model.params
@@ -60,7 +61,7 @@ class LLaMA:
 
             if temperature > 0:
                 probs = torch.softmax(logits / temperature, dim=-1)
-                next_token = sample(probs, top_p=top_p, top_k=top_k)
+                next_token = sample(probs, top_p=top_p, top_k=top_k, eos_id=self.tokenizer.eos_id, eos_w=eos_w)
             else:
                 next_token = torch.argmax(logits, dim=-1)
             next_token = next_token.reshape(-1)
@@ -97,8 +98,8 @@ class LLaMA:
             decoded.append(self.tokenizer.decode(t))
         return decoded
 
-def sample(probs, top_p=0.0, top_k=40):
-    probs[0, 2] = probs[0, 2] * 0.01
+def sample(probs, top_p=0.0, top_k=40, eos_id=2, eos_w=1.0):
+    probs[0, eos_id] = probs[0, eos_id] * eos_w
     if top_k > 0:
         probs_sort, probs_idx = torch.topk(probs, top_k)
     else:

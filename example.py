@@ -89,6 +89,7 @@ def main(
     max_batch_size: int = 1,
     seed: int = 1,
     count: int = 1,
+    eos_w: float = 1.0,
 ):
     local_rank, world_rank, world_size = setup_model_parallel(seed)
     if world_rank > 0:
@@ -104,6 +105,7 @@ def main(
         repetition_penalty=repetition_penalty,
         max_seq_len=max_seq_len,
         max_gen_len=max_gen_len,
+        eos_w=eos_w,
     )))
     print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 
@@ -137,7 +139,7 @@ def main(
                 text = ''.join(chars)
                 print(text, end='', flush=True)
             text, = generator.generate(
-                [prompt], max_gen_len=max_gen_len, temperature=temperature, top_p=top_p, top_k=top_k, repetition_penalty=repetition_penalty, token_callback=callback,
+                [prompt], max_gen_len=max_gen_len, temperature=temperature, top_p=top_p, top_k=top_k, repetition_penalty=repetition_penalty, token_callback=callback, eos_w=eos_w
             )
 
 
