@@ -91,7 +91,7 @@ def main(
     count: int = 1,
 ):
     local_rank, world_rank, world_size = setup_model_parallel(seed)
-    if local_rank > 0:
+    if world_rank > 0:
         sys.stdout = open(os.devnull, "w")
 
     print("\n")
