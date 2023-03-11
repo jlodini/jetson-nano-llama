@@ -18,6 +18,7 @@ from llama import ModelArgs, Transformer, Tokenizer, LLaMA
 
 def setup_model_parallel(seed: int) -> Tuple[int, int]:
     local_rank = int(os.environ.get("LOCAL_RANK", -1))
+    world_rank = int(os.environ.get("RANK", -1))
     world_size = int(os.environ.get("WORLD_SIZE", -1))
 
     torch.distributed.init_process_group("nccl")
@@ -26,13 +27,14 @@ def setup_model_parallel(seed: int) -> Tuple[int, int]:
 
     # seed must be the same in all processes
     torch.manual_seed(seed)
-    return local_rank, world_size
+    return local_rank, world_rank, world_size
 
 
 def load(
     ckpt_dir: str,
     tokenizer_path: str,
     local_rank: int,
+    world_rank: int,
     world_size: int,
     max_seq_len: int,
     max_batch_size: int,
@@ -42,7 +44,8 @@ def load(
     assert world_size == len(
         checkpoints
     ), f"Loading a checkpoint for MP={len(checkpoints)} but world size is {world_size}"
-    ckpt_path = checkpoints[local_rank]
+
+    ckpt_path = checkpoints[world_rank]
     print("Loading")
     checkpoint = torch.load(ckpt_path, map_location="cpu")
     with open(Path(ckpt_dir) / "params.json", "r") as f:
@@ -77,7 +80,7 @@ def main(
     seed: int = 1,
     count: int = 5,
 ):
-    local_rank, world_size = setup_model_parallel(seed)
+    local_rank, world_rank, world_size = setup_model_parallel(seed)
     if local_rank > 0:
         sys.stdout = open(os.devnull, "w")
 
@@ -96,7 +99,7 @@ def main(
 
 
     generator = load(
-        ckpt_dir, tokenizer_path, local_rank, world_size, max_seq_len, max_batch_size
+        ckpt_dir, tokenizer_path, local_rank, world_rank, world_size, max_seq_len, max_batch_size
     )
 
     prompts = [
