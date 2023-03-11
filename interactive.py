@@ -91,6 +91,7 @@ def main(
     seed: int = 1,
     count: int = 1,
     eos_w: float = 1.0,
+    max_prompt_len: int = 256,
 ):
     local_rank, world_rank, world_size = setup_model_parallel(seed)
     device = torch.device("cuda:{}".format(local_rank))
@@ -117,25 +118,24 @@ def main(
     )
 
     while True:
+        tensor = torch.ones(max_prompt_len) * -1.0
+        tensor = tensor.to(device)
         if world_rank == 0:
             prompt = input("Prompt >>> ")
             while not prompt:
                 print('Prompt should not be empty!')
                 prompt = input("Prompt >>> ")
-            tensor = torch.tensor([ord(c) for c in prompt])
-            tensor = tensor.to(device)
+            prompt = prompt[:max_prompt_len]
+            for i, c in enumerate(prompt):
+                tensor[i] = ord(c)
             for rank_recv in range(1, world_size):
                 dist.send(tensor=tensor, dst=rank_recv)
                 print('Sending prompt to Rank {}\n'.format(rank_recv))
         else:
-            tensor = torch.Tensor()
-            tensor = tensor.to(device)
-            prompt = None
-            while tensor.numel() == 0:
-                time.sleep(1)
-                dist.recv(tensor=tensor, src=0)
+            dist.recv(tensor=tensor, src=0)
+            mask = tensor >= 0
+            tensor = tensor[mask]
             prompt = ''.join([chr(int(x)) for x in tensor])
-            print('Rank {} has received prompt {}\n'.format(world_rank, prompt))
 
         i = 0
         while i < count or count <= 0:
@@ -160,7 +160,7 @@ def main(
             text, = generator.generate(
                 [prompt], max_gen_len=max_gen_len, temperature=temperature, top_p=top_p, top_k=top_k, repetition_penalty=repetition_penalty, token_callback=callback, eos_w=eos_w
             )
-
+            print(f"\n============== end sample {i} =================\n")
 
 if __name__ == "__main__":
     fire.Fire(main)
