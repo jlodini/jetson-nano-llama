@@ -84,9 +84,9 @@ def main(
     top_p: float = 0.0,
     top_k: int = 40,
     repetition_penalty: float = (1 / 0.85),
-    max_seq_len: int = 512,
-    max_gen_len: int = 256,
-    max_batch_size: int = 32,
+    max_seq_len: int = 1024,
+    max_gen_len: int = 512,
+    max_batch_size: int = 1,
     seed: int = 1,
     count: int = 1,
 ):
