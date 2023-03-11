@@ -8,6 +8,7 @@ import torch
 import fire
 import time
 import json
+import torch.distributed as dist
 
 from pathlib import Path
 
@@ -115,10 +116,20 @@ def main(
     )
 
     while True:
-        prompts = input("Prompt >>> ")
-        while not prompts:
-            print('Prompt should not be empty!')
-            prompts = input("Prompt >>> ")
+        if world_rank == 0:
+            prompt = input("Prompt >>> ")
+            while not prompt:
+                print('Prompt should not be empty!')
+                prompt = input("Prompt >>> ")
+            tensor = torch.tensor([ord(c) for c in prompt])
+            for rank_recv in range(1, world_size):
+                dist.send(tensor=tensor, dst=rank_recv)
+                print('Sending prompt to Rank {}\n'.format(rank_recv))
+        else:
+            tensor = torch.Tensor()
+            dist.recv(tensor=tensor, src=0)
+            prompt = ''.join([chr(int(x)) for x in tensor])
+            print('Rank {} has received prompt {}\n'.format(world_rank, prompt))
 
         i = 0
         while i < count or count <= 0:
