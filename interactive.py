@@ -93,6 +93,7 @@ def main(
     eos_w: float = 1.0,
 ):
     local_rank, world_rank, world_size = setup_model_parallel(seed)
+    device = torch.device("cuda:{}".format(local_rank))
     if world_rank > 0:
         sys.stdout = open(os.devnull, "w")
 
@@ -122,11 +123,13 @@ def main(
                 print('Prompt should not be empty!')
                 prompt = input("Prompt >>> ")
             tensor = torch.tensor([ord(c) for c in prompt])
+            tensor = tensor.to(device)
             for rank_recv in range(1, world_size):
                 dist.send(tensor=tensor, dst=rank_recv)
                 print('Sending prompt to Rank {}\n'.format(rank_recv))
         else:
             tensor = torch.Tensor()
+            tensor = tensor.to(device)
             dist.recv(tensor=tensor, src=0)
             prompt = ''.join([chr(int(x)) for x in tensor])
             print('Rank {} has received prompt {}\n'.format(world_rank, prompt))
