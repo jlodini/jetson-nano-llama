@@ -114,15 +114,15 @@ def main(
 
     prompts = [
         # For these prompts, the expected answer is the natural continuation of the prompt
-
+        "The winner of the FIFA world cup over the past decades are: Brazil (1994), France (1998), ",
         # "I believe the meaning of life is",
         # "Simply put, the theory of relativity states that",
         # "Building a website can be done in a few simple steps:\n1.",
         # "Here's how to build it in a few simple steps:\n1.",
 
-        "This is Captain Jean-Luc Picard",
-        "I am Lieutenant Commander Data",
-        "The Klingons are attacking",
+        # "This is Captain Jean-Luc Picard",
+        # "I am Lieutenant Commander Data",
+        # "The Klingons are attacking",
 
 #         # Few shot prompts: https://huggingface.co/blog/few-shot-learning-gpt-neo-and-inference-api
 #         """Tweet: "I hate it when my phone battery dies."
