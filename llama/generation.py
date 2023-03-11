@@ -98,6 +98,7 @@ class LLaMA:
         return decoded
 
 def sample(probs, top_p=0.0, top_k=40):
+    probs[0, 2] = probs[0, 2] * 0.01
     if top_k > 0:
         probs_sort, probs_idx = torch.topk(probs, top_k)
     else:

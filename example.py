@@ -84,8 +84,8 @@ def main(
     top_p: float = 0.0,
     top_k: int = 40,
     repetition_penalty: float = (1 / 0.85),
-    max_seq_len: int = 1024,
-    max_gen_len: int = 512,
+    max_seq_len: int = 2048,
+    max_gen_len: int = 2000,
     max_batch_size: int = 1,
     seed: int = 1,
     count: int = 1,
@@ -113,38 +113,7 @@ def main(
     )
 
     prompts = [
-        # For these prompts, the expected answer is the natural continuation of the prompt
-        "The winner of the FIFA world cup over the past decades are: Brazil (1994), France (1998), ",
-        # "I believe the meaning of life is",
-        # "Simply put, the theory of relativity states that",
-        # "Building a website can be done in a few simple steps:\n1.",
-        # "Here's how to build it in a few simple steps:\n1.",
-
-        # "This is Captain Jean-Luc Picard",
-        # "I am Lieutenant Commander Data",
-        # "The Klingons are attacking",
-
-#         # Few shot prompts: https://huggingface.co/blog/few-shot-learning-gpt-neo-and-inference-api
-#         """Tweet: "I hate it when my phone battery dies."
-# Sentiment: Negative
-# ###
-# Tweet: "My day has been 👍"
-# Sentiment: Positive
-# ###
-# Tweet: "This is the link to the article"
-# Sentiment: Neutral
-# ###
-# Tweet: "This new music video was incredibile"
-# Sentiment:""",
-#         """Translate English to French:
-#
-# sea otter => loutre de mer
-#
-# peppermint => menthe poivrée
-#
-# plush girafe => girafe peluche
-#
-# cheese =>""",
+        "[Scene: Central Perk, Chandler, Joey, Phoebe, and Monica are there.]",
     ]
     i = 0
     while i < count or count <= 0:
