@@ -137,27 +137,26 @@ def main(
         i = 0
         while i < count or count <= 0:
             i += 1
-            for prompt in prompts:
-                print(f"\n============== sample {i} =================\n")
-                width = 0
-                def callback(text):
-                    nonlocal width
-                    text = text.replace('\n', '\n\n')
-                    chars = []
-                    for i, c in enumerate(text):
-                        if c == ' ' and width >= 60:
-                            chars.append('\n')
+            print(f"\n============== sample {i} =================\n")
+            width = 0
+            def callback(text):
+                nonlocal width
+                text = text.replace('\n', '\n\n')
+                chars = []
+                for i, c in enumerate(text):
+                    if c == ' ' and width >= 60:
+                        chars.append('\n')
+                        width = 0
+                    else:
+                        width += 1
+                        chars.append(c)
+                        if c == '\n':
                             width = 0
-                        else:
-                            width += 1
-                            chars.append(c)
-                            if c == '\n':
-                                width = 0
-                    text = ''.join(chars)
-                    print(text, end='', flush=True)
-                text, = generator.generate(
-                    [prompt], max_gen_len=max_gen_len, temperature=temperature, top_p=top_p, top_k=top_k, repetition_penalty=repetition_penalty, token_callback=callback, eos_w=eos_w
-                )
+                text = ''.join(chars)
+                print(text, end='', flush=True)
+            text, = generator.generate(
+                [prompt], max_gen_len=max_gen_len, temperature=temperature, top_p=top_p, top_k=top_k, repetition_penalty=repetition_penalty, token_callback=callback, eos_w=eos_w
+            )
 
 
 if __name__ == "__main__":
