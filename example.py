@@ -82,7 +82,7 @@ def main(
     temperature: float = 0.7,
     # top_p: float = 0.95,
     top_p: float = 0.0,
-    top_k: int = 40,
+    top_k: int = 10,
     repetition_penalty: float = (1 / 0.85),
     max_seq_len: int = 2048,
     max_gen_len: int = 2000,
