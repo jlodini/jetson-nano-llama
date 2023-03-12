@@ -1,6 +1,8 @@
 #!/bin/bash
 
-source ./config.sh
+LAMBDA_CLOUD_KEY="path-to-your-cloud-ssh-key"
+HEAD_IP="xxx.xxx.xxx.xxx"
+WORKER_IP="xxx.xxx.xxx.xxx xxx.xxx.xxx.xxx"
 
 ALL_IP=( $HEAD_IP "${WORKER_IP[@]}" )
 

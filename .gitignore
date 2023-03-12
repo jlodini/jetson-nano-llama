@@ -161,4 +161,4 @@ cython_debug/
 #
 
 deployment/config.sh
-deployment/request_2xA10.json
+deployment/local*
