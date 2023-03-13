@@ -91,7 +91,6 @@ def main(
     seed: int = 1,
     count: int = 1,
     eos_w: float = 1.0,
-    max_prompt_len: int = 256,
 ):
     local_rank, world_rank, world_size = setup_model_parallel(seed)
     device = torch.device("cuda:{}".format(local_rank))
@@ -118,14 +117,14 @@ def main(
     )
 
     while True:
-        tensor = torch.ones(max_prompt_len) * -1.0
+        tensor = torch.ones(max_seq_len) * -1.0
         tensor = tensor.to(device)
         if world_rank == 0:
             prompt = input("Prompt >>> ")
             while not prompt:
                 print('Prompt should not be empty!')
                 prompt = input("Prompt >>> ")
-            prompt = prompt[:max_prompt_len]
+            prompt = prompt[:max_seq_len]
             for i, c in enumerate(prompt):
                 tensor[i] = ord(c)
             for rank_recv in range(1, world_size):
