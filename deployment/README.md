@@ -13,7 +13,7 @@ Despite being more memory effient than previous langauge foundation models, LLAM
 
 Don't worry, this tutorial explains how to use `mpirun` to launch an LLAMA inference job across multiple cloud instances (one or more GPUs on each instance). Here are some key updates in addition to the [original llama repo](https://github.com/facebookresearch/llama) and [shawwn's fork](https://github.com/shawwn/llama):
 
-- A script to easily set up a "cluster" of cloud instances that is ready to run LLAMA inference (all models from 7B to 65B).
+- A [script](./setup_nodes.sh) to easily set up a "cluster" of cloud instances that is ready to run LLAMA inference (all models from 7B to 65B).
 - `mpirun` compatible, so you can launch the job directly from the head node without the need of typing in the `torchrun` command on the worker nodes.
 - Interactive inference mode across multiple nodes.
 - `eos_w`: constrols how "lengthy" the results are likely to be by scaling the probability of `eos_token`.
