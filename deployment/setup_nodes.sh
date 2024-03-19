@@ -39,7 +39,7 @@ sshpass -f password ssh jetson@$HEAD_IP "if [ ! -d /home/jetson/shared/llama ]; 
 sshpass -f password ssh jetson@$HEAD_IP "if [ ! -d /home/jetson/shared/llama-dl ]; then git clone https://github.com/chuanli11/llama-dl.git /home/jetson/shared/llama-dl; fi"
 
 echo "Install LLAMA dependencies (asynchronously) ------------------------------"
-for IP in ${ALL_IP[*]}; do cat dependencies-install.sh | sshpass -f password ssh jetson${IP} & done
+for IP in ${ALL_IP[*]}; do cat dependencies-install.sh | sshpass -f password ssh jetson@${IP} & done
 
 wait
 
