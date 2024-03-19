@@ -20,7 +20,7 @@ done
 
 echo "Let the head node ssh into the all nodes at least once so in the future it won't ask about fingerprint ------------------------------"
 for IP in ${ALL_IP[*]}; do
-    ssh -t jetson:jetson@$HEAD_IP "echo exit | xargs ssh ubuntu@$IP"
+sshpass -f password ssh -t jetson@$HEAD_IP "echo exit | xargs ssh ubuntu@$IP"
 done
 
 echo "Set up NFS ------------------------------"
